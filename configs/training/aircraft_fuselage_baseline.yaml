@@ -1,0 +1,30 @@
+# Run only after the source package is inspected, converted, audited, and split.
+model: yolo11n.pt
+dataset: ../../data/processed/aircraft_fuselage_det2023/dataset.yaml
+epochs: 30
+image_size: 640
+batch_size: 4
+device: auto
+workers: 4
+seed: 42
+patience: 10
+experiment_name: aircraft-fuselage-baseline-001
+run_label: BASELINE TRAINING
+project_directory: ../../artifacts/experiments
+audit_output_directory: ../../data/reports/aircraft_fuselage_det2023
+phash_distance_threshold: 5
+corrupted_image_failure_threshold: 0.01
+allow_failed_audit: false
+minimum_box_area: 0.0001
+imbalance_warning_ratio: 20.0
+augmentation:
+  degrees: 0.0
+  translate: 0.1
+  scale: 0.1
+  fliplr: 0.5
+  flipud: 0.0
+  mosaic: 0.5
+  mixup: 0.0
+  hsv_h: 0.015
+  hsv_s: 0.5
+  hsv_v: 0.3

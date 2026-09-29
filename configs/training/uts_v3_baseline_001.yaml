@@ -1,0 +1,30 @@
+# One-time first baseline on the audited, group-split UTS v3 derivative.
+model: ../../yolo11n.pt
+dataset: C:/Users/leoar/Desktop/utsv3_clean_final2/data.yaml
+epochs: 100
+image_size: 640
+batch_size: 8
+device: 0
+workers: 4
+seed: 42
+patience: 15
+experiment_name: baseline_001_yolo11n_utsv3_clean
+run_label: AEROINSPECT BASELINE EXPERIMENT 001
+project_directory: ../../artifacts/experiments
+audit_output_directory: ../../data/reports/uts_v3_baseline_001
+phash_distance_threshold: 5
+corrupted_image_failure_threshold: 0.01
+allow_failed_audit: false
+minimum_box_area: 0.0001
+imbalance_warning_ratio: 20.0
+augmentation:
+  degrees: 0.0
+  translate: 0.1
+  scale: 0.1
+  fliplr: 0.5
+  flipud: 0.0
+  mosaic: 0.5
+  mixup: 0.0
+  hsv_h: 0.015
+  hsv_s: 0.5
+  hsv_v: 0.3

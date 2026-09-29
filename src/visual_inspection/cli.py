@@ -19,6 +19,9 @@ def main(argv: list[str] | None = None) -> int:
     audit.add_argument("--config", type=Path)
     audit.add_argument("--phash-threshold", type=int)
     audit.add_argument("--corrupted-image-failure-threshold", type=float)
+    audit.add_argument(
+        "--data-yaml", type=Path, help="Also validate YOLO labels using dataset YAML"
+    )
     for name in ("train", "validation", "test"):
         audit.add_argument(f"--{name}-name")
     args = parser.parse_args(argv)
@@ -32,7 +35,7 @@ def main(argv: list[str] | None = None) -> int:
             validation_name=args.validation_name,
             test_name=args.test_name,
         )
-        result = audit_dataset(args.dataset, args.output, config)
+        result = audit_dataset(args.dataset, args.output, config, yolo_dataset_yaml=args.data_yaml)
     except (OSError, ValueError, TypeError, yaml.YAMLError) as exc:
         parser.exit(2, f"Audit error: {exc}\n")
     summary = result.summary

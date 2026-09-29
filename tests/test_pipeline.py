@@ -96,3 +96,47 @@ def test_single_image_statistics_are_json_safe(dataset, tmp_path, image):
     result = audit_dataset(dataset, tmp_path / "reports")
     summary = json.loads((result.report_directory / "summary.json").read_text())
     assert summary["distributions"]["width"]["std"] is None
+
+
+def test_annotation_audit_extends_phase_zero_report(dataset, tmp_path, image):
+    import yaml
+
+    for index, split in enumerate(("train", "val", "test")):
+        Image.new("RGB", (96, 64), color=(30 + index * 50, 50, 80)).save(
+            dataset / split / "images/a.png"
+        )
+        (dataset / split / "labels/a.txt").write_text("0 0.5 0.5 0.2 0.2\n")
+    data_yaml = dataset / "dataset.yaml"
+    data_yaml.write_text(
+        yaml.safe_dump(
+            {
+                "path": str(dataset),
+                "train": "train/images",
+                "val": "val/images",
+                "test": "test/images",
+                "names": {0: "crack", 1: "pothole"},
+            }
+        )
+    )
+    result = audit_dataset(dataset, tmp_path / "reports", yolo_dataset_yaml=data_yaml)
+    assert result.summary["health"] == "WARNING"
+    assert result.summary["annotations"]["total_labeled_objects"] == 3
+    assert result.summary["annotations"]["severe_class_imbalance"]
+    assert (result.report_directory / "annotation_issues.csv").is_file()
+    report = (result.report_directory / "report.md").read_text()
+    assert "Dataset Health: WARNING" in report
+
+
+def test_annotation_yaml_root_must_match_audit_root(dataset, tmp_path, image):
+    import yaml
+
+    other = tmp_path / "other"
+    other.mkdir()
+    for split in ("x", "y"):
+        (other / split).mkdir()
+    data_yaml = other / "dataset.yaml"
+    data_yaml.write_text(
+        yaml.safe_dump({"path": str(other), "train": "x", "val": "y", "names": ["crack"]})
+    )
+    with pytest.raises(ValueError, match="root must match"):
+        audit_dataset(dataset, tmp_path / "reports", yolo_dataset_yaml=data_yaml)

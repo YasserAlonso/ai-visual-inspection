@@ -1,0 +1,7 @@
+# Generic YOLO detection example. Replace names with the selected dataset's exact labels.
+path: .
+train: train/images
+val: val/images
+test: test/images
+names:
+  0: replace_with_dataset_class

@@ -4,14 +4,15 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ai-visual-inspection"
-version = "0.1.0"
-description = "Image dataset validation, duplicate detection, and leakage auditing"
+version = "0.2.0.dev0"
+description = "AI-assisted aerospace inspection and maintenance platform"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = ["Pillow>=10", "numpy>=1.24", "pandas>=2", "ImageHash>=4.3", "PyYAML>=6"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "ruff>=0.6"]
+training = ["torch>=2.7", "torchvision>=0.22", "ultralytics>=8.3"]
 
 [project.scripts]
 visual-inspection = "visual_inspection.cli:main"
